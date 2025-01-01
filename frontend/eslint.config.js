@@ -28,6 +28,10 @@ export default [
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
+      "rules": {
+      "react/react-in-jsx-scope": "off", // Tidak perlu impor React untuk JSX
+      "no-unused-vars": ["warn", { "varsIgnorePattern": "React" }] // Abaikan React tidak digunakan
+      },
       'react/jsx-no-target-blank': 'off',
       'react-refresh/only-export-components': [
         'warn',
