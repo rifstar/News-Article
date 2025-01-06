@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
@@ -6,16 +6,40 @@ import { Button } from '../ui/button'
 const DashboardProfile = () => {
   const { currentUser } = useSelector((state) => state.user)
 
+  const profilePicRef = useRef()
+
+  const [imageFile, setImageFile] = useState(null)
+  const [imageFileUrl, setImageFileUrl] = useState(null)
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+
+    // console.log(file)
+    if (file) {
+      setImageFile(file)
+      setImageFileUrl(URL.createObjectURL(file))
+    }
+  }
+
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Update Your Profile</h1>
 
       <form className='flex flex-col gap-4'>
+        <input 
+          type="file" 
+          accept='image/*' 
+          hidden 
+          ref={profilePicRef} 
+          onChange={handleImageChange}
+        />
+
         <div className='w-32 h-32 self-center cursor-pointer shadow:md overflow-hidden'>
-          <img 
-            src={currentUser.profilePicture} 
+          <img
+            src={imageFileUrl || currentUser.profilePicture} 
             alt=""
             className='rounded-full w-full h-full object-cover border-8 border-gray-300'
+            onClick={()=>profilePicRef.current.click()}
           />
         </div>
 
