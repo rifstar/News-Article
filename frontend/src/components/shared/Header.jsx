@@ -2,11 +2,38 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { GoSearch } from "react-icons/go";
 import { Button } from "../ui/button";
-import { useSelector } from "react-redux";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useDispatch, useSelector } from "react-redux";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { signOutSuccess } from "@/redux/user/userSlice";
 
 const Header = () => {
+  const dispatch = useDispatch()
   const { currentUser } = useSelector((state) => state.user);
+
+  const handleSignout = async () => {
+    try {
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        console.log(data.message)
+      } else {
+        dispatch(signOutSuccess())
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <header className="shadow-lg sticky ">
@@ -64,7 +91,7 @@ const Header = () => {
                 <Link to="/dashboard?tab=profile">Profile</Link>
               </DropdownMenuItem>
 
-              <DropdownMenuItem className="font-semibold mt-2">
+              <DropdownMenuItem className="font-semibold mt-2" onClick={handleSignout}>
                 Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
