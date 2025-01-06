@@ -1,33 +1,37 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
 
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import GoogleAuth from "@/components/shared/GoogleAuth";
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useToast } from "@/hooks/use-toast"
+import GoogleAuth from "@/components/shared/GoogleAuth"
 
 const formSchema = z.object({
   username: z
-  .string()
-  .min(2, {message: "Username must be alleast 2 characters"})
-  .max(50),
-  email: z
-  .string()
-  .min({message: "Invalid email address"})
-  .max(50),
+    .string()
+    .min(2, { message: "Username must be atleast 2 characters" }),
+  email: z.string().min({ message: "Invalid email address." }),
   password: z
-  .string()
-  .min(8, {message: "Password must  be atleast 8 characters"})
-  .max(50),
-});
+    .string()
+    .min(8, { message: "Password must be atleast 8 characters." }),
+})
 
 const SignUpForm = () => {
   const { toast } = useToast()
-  const navigate = useNavigate
+  const navigate = useNavigate()
+
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
 
@@ -39,39 +43,39 @@ const SignUpForm = () => {
       email: "",
       password: "",
     },
-  });
+  })
 
-  // Dedine a submit handler
+  // 2. Define a submit handler.
   async function onSubmit(values) {
     try {
       setLoading(true)
       setErrorMessage(null)
 
       const res = await fetch("/api/auth/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(values),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
       })
 
       const data = await res.json()
 
-      if(data.success == false){
+      if (data.success === false) {
         setLoading(false)
-        toast({title: "Sign up failed! Please try again"})
+        toast({ title: "Sign up failed! Please try again." })
 
         return setErrorMessage(data.message)
       }
 
       setLoading(false)
 
-      if(res.ok){
-        toast({title: "Sign up successfull!"})
+      if (res.ok) {
+        toast({ title: "Sign up Successful!" })
         navigate("/sign-in")
       }
     } catch (error) {
       setErrorMessage(error.message)
       setLoading(false)
-      toast({title: "Something went wrong!"})
+      toast({ title: "Something went wrong!" })
     }
   }
 
@@ -80,14 +84,21 @@ const SignUpForm = () => {
       <div className="flex p-3 max-w-3xl sm:max-w-5xl mx-auto flex-col md:flex-row md:items-center gap-5">
         {/* left */}
         <div className="flex-1">
-          <Link to={"/"} className="font-bold text-2xl sm:text-4xl flex flex-wrap">
-            <span className="text-slate-500">Lensa</span>
-            <span className="text-slate-900">News</span>
+          <Link
+            to={"/"}
+            className="font-bold text-2xl sm:text-4xl flex flex-wrap"
+          >
+            <span className="text-slate-500">Morning</span>
+            <span className="text-slate-900">Dispatch</span>
           </Link>
 
-          <h2 className="text-[24px] md:text-[30px] font-bold leading-[140%] tracking-tighter pt-5 sm:pt-12">Create a new account</h2>
+          <h2 className="text-[24px] md:text-[30px] font-bold leading-[140%] tracking-tighter pt-5 sm:pt-12">
+            Create a new account
+          </h2>
 
-          <p className="text-slate-500 text-[14px] font-medium leading-[140%] md:text-[16px] md:font-normal mt-2">Welcome to Lensa News, Please provide your details</p>
+          <p className="text-slate-500 text-[14px] font-medium leading-[140%] md:text-[16px] md:font-normal mt-2">
+            Welcome to Morning Dispatch, Please provide your details
+          </p>
         </div>
 
         {/* right */}
@@ -104,8 +115,7 @@ const SignUpForm = () => {
                     <FormControl>
                       <Input type="text" placeholder="Username" {...field} />
                     </FormControl>
-                    {/* <FormDescription>This is your public display name.</FormDescription> */}
-                    
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -119,10 +129,13 @@ const SignUpForm = () => {
                     <FormLabel>Email</FormLabel>
 
                     <FormControl>
-                      <Input type="email" placeholder="your@email.com" {...field} />
+                      <Input
+                        type="email"
+                        placeholder="xyz@email.com"
+                        {...field}
+                      />
                     </FormControl>
-                    {/* <FormDescription>This is your public display name.</FormDescription> */}
-                    
+
                     <FormMessage />
                   </FormItem>
                 )}
@@ -136,18 +149,24 @@ const SignUpForm = () => {
                     <FormLabel>Password</FormLabel>
 
                     <FormControl>
-                      <Input type="password" placeholder="Password" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="Password"
+                        {...field}
+                      />
                     </FormControl>
-                    {/* <FormDescription>This is your public display name.</FormDescription> */}
-                    
+
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button type="submit" className="bg-blue-500 w-full" disabled={loading}
+              <Button
+                type="submit"
+                className="bg-blue-500 w-full"
+                disabled={loading}
               >
-                {loading? (
+                {loading ? (
                   <span className="animate-pulse">Loading...</span>
                 ) : (
                   <span>Sign Up</span>
@@ -162,7 +181,7 @@ const SignUpForm = () => {
             <span>Have an account?</span>
 
             <Link to="/sign-in" className="text-blue-500">
-                Sign in
+              Sign In
             </Link>
           </div>
 
@@ -170,7 +189,7 @@ const SignUpForm = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SignUpForm;
+export default SignUpForm
