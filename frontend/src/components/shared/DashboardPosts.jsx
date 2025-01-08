@@ -7,7 +7,10 @@ const DashboardPosts = () => {
   const { currentUser } = useSelector((state) => state.user)
 
   const [userPosts, setUserPosts] = useState([])
-  console.log(userPosts);
+  // console.log(userPosts);
+
+  const [showMore, setShowMore] = useState(true)
+  const [postIdToDelete, setPostIdToDelete] = useState("")
   
 
   useEffect(() => {
@@ -20,7 +23,7 @@ const DashboardPosts = () => {
         if (res.ok) {
           setUserPosts(data.posts)
 
-          if (data.posts.length < 9) {
+          if (data.posts.length < 2) {
             setShowMore(false)
           }
         }
@@ -33,6 +36,28 @@ const DashboardPosts = () => {
       fetchPosts()
     }
   }, [currentUser._id])
+
+  const handleShowMore = async () => {
+    const startIndex = userPosts.length
+
+    try {
+      const res = await fetch(
+        `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
+      )
+
+      const data = await res.json()
+
+      if (res.ok) {
+        setUserPosts((prev) => [...prev, ...data.posts])
+
+        if (data.posts.length < 2) {
+          setShowMore(false)
+        }
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-3">
@@ -91,11 +116,20 @@ const DashboardPosts = () => {
                       <span>Edit</span>
                     </Link>
                   </TableCell>
-
                 </TableRow>
               </TableBody>
             ))}
           </Table>
+
+
+          {showMore && (
+            <button
+              onClick={handleShowMore}
+              className="w-full text-blue-700 self-center text-sm py-7"
+            >
+              Show more
+            </button>
+          )}
         </>
       ) : (
       <p>You have no posts yet!</p>
