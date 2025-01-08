@@ -34,7 +34,7 @@ export const create = async (req, res, next) => {
 export const getPosts = async(req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0
-    const limit = parseInt(req.query.limit) || 2
+    const limit = parseInt(req.query.limit) || 7
 
     const sortDirection = req.query.sort === "asc" ? 1 : -1
 
@@ -77,6 +77,22 @@ export const getPosts = async(req, res, next) => {
       totalPosts,
       lastMonthPosts,
     })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deletepost = async(req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(
+      errorHandler(403, "You are not authorized to delete this post!")
+    )
+  }
+
+  try {
+    await Post.findByIdAndDelete(req.params.postId)
+
+    res.status(200).json("Post has been deleted!")
   } catch (error) {
     next(error)
   }

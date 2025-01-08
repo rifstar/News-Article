@@ -23,7 +23,7 @@ const DashboardPosts = () => {
         if (res.ok) {
           setUserPosts(data.posts)
 
-          if (data.posts.length < 2) {
+          if (data.posts.length < 7) {
             setShowMore(false)
           }
         }
@@ -50,7 +50,7 @@ const DashboardPosts = () => {
       if (res.ok) {
         setUserPosts((prev) => [...prev, ...data.posts])
 
-        if (data.posts.length < 2) {
+        if (data.posts.length < 7) {
           setShowMore(false)
         }
       }
