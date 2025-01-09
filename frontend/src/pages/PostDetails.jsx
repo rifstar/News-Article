@@ -1,7 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import Advertise from "@/components/shared/Advertise"
+import CommentSection from "@/components/shared/CommentSection"
+import PostCard from "@/components/shared/PostCard"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import React, { useEffect, useState } from "react"
+import { Link, useParams } from "react-router-dom"
 
 const PostDetails = () => {
   const { postSlug } = useParams()
@@ -11,7 +14,9 @@ const PostDetails = () => {
   const [post, setPost] = useState(null)
   const [recentArticles, setRecentArticles] = useState(null)
 
-  console.log(post);
+  console.log(recentArticles)
+
+  // console.log(post)
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -38,12 +43,30 @@ const PostDetails = () => {
         setError(true)
         setLoading(false)
       }
-    };
+    }
 
-    fetchPost();
-  }, [postSlug]);
+    fetchPost()
+  }, [postSlug])
 
-  if(loading){
+  useEffect(() => {
+    try {
+      const fetchRecentPosts = async () => {
+        const res = await fetch(`/api/post/getposts?limit=3`)
+
+        const data = await res.json()
+
+        if (res.ok) {
+          setRecentArticles(data.posts)
+        }
+      }
+
+      fetchRecentPosts()
+    } catch (error) {
+      console.log(error.message)
+    }
+  }, [])
+
+  if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <img
@@ -61,12 +84,12 @@ const PostDetails = () => {
         {post && post.title}
       </h1>
 
-      <Link 
+      <Link
         to={`/search?category=${post && post.category}`}
         className="self-center mt-5"
       >
         <Button variant="outline" className="border border-slate-500">
-        {post && post.category}
+          {post && post.category}
         </Button>
       </Link>
 
@@ -90,8 +113,27 @@ const PostDetails = () => {
         className="p-3 max-w-3xl mx-auto w-full post-content"
         dangerouslySetInnerHTML={{ __html: post && post.content }}
       ></div>
+
+      <div className="max-w-4xl mx-auto w-full">
+        <Advertise />
+      </div>
+
+      <CommentSection postId={post._id} />
+
+      <div className="flex flex-col justify-center items-center mb-5">
+        <h1 className="text-xl font-semibold mt-5 text-slate-700">
+          Recently published articles
+        </h1>
+
+        <div className="flex flex-wrap gap-5 my-5 justify-center">
+          {recentArticles &&
+            recentArticles.map((post) => (
+              <PostCard key={post._id} post={post} />
+            ))}
+        </div>
+      </div>
     </main>
   )
-};
+}
 
-export default PostDetails;
+export default PostDetails
