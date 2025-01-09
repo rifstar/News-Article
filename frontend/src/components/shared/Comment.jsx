@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog"
+import moment from "moment"
 
 const Comment = ({ comment, onLike, onEdit, onDelete }) => {
   const [user, setUser] = useState({})
@@ -86,6 +87,7 @@ const Comment = ({ comment, onLike, onEdit, onDelete }) => {
           </span>
 
           <span className="text-gray-500 text-sm">
+            {moment(comment.createdAt).fromNow()}
           </span>
         </div>
 
