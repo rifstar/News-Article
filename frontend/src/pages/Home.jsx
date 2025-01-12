@@ -1,9 +1,9 @@
-import Advertise from '@/components/shared/Advertise'
-import PostCard from '@/components/shared/PostCard'
-import { Button } from '@/components/ui/button'
-import { ArrowRight } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import Advertise from "@/components/shared/Advertise"
+import PostCard from "@/components/shared/PostCard"
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
+import React, { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 
 const Home = () => {
   const [posts, setPosts] = useState([])
@@ -11,7 +11,7 @@ const Home = () => {
   // console.log(posts)
 
   useEffect(() => {
-    const fetchposts = async() => {
+    const fetchPosts = async () => {
       const res = await fetch("/api/post/getPosts?limit=6")
 
       const data = await res.json()
@@ -21,14 +21,14 @@ const Home = () => {
       }
     }
 
-    fetchposts()
+    fetchPosts()
   }, [])
 
   return (
     <div>
-      <div className='flex flex-col gap-6 p-28 max-w-6xl mx-auto'>
-        <h1>
-          Welcome to <span> Lensa News </span>
+      <div className="flex flex-col gap-6 p-28 max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-blue-800">
+          Welcome to <span className="text-red-600"> Lensa News</span>
         </h1>
 
         <p className="text-gray-600 mt-3 text-lg">
@@ -48,16 +48,16 @@ const Home = () => {
       <section className="pb-16 bg-white">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8 text-gray-800">
-            Why You'll Love Lensa News
+            Why You'll Love Morning Dispatch
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <FeatureCard 
+            <FeatureCard
               title={"Diverse Content"}
               description={
                 "Explore news on a variety of topics, from technology to lifestyle."
               }
-              icon={"📚"}
+              icon="📚"
             />
 
             <FeatureCard
@@ -86,7 +86,7 @@ const Home = () => {
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 py-7">
         {posts && posts.length > 0 && (
           <div className="flex flex-col gap-6">
-            <h2 className='text-2xl font-bold text-slate-700'>Recent Posts</h2>
+            <h2 className="text-2xl font-bold text-slate-700">Recent Posts</h2>
 
             <div className="flex flex-wrap gap-4">
               {posts.map((post) => (

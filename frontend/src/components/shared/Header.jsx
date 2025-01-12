@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { GoSearch } from "react-icons/go";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +15,23 @@ import { signOutSuccess } from "@/redux/user/userSlice";
 
 const Header = () => {
   const dispatch = useDispatch()
+  const location = useLocation()
+  const navigate = useNavigate()
+
   const { currentUser } = useSelector((state) => state.user);
+
+  const [searchTerm, setSearchTerm] = useState("")
+  console.log(searchTerm);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search)
+
+    const searchTermFromUrl = urlParams.get("searchTerm")
+
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl)
+    }
+  }, [location.search])
 
   const handleSignout = async () => {
     try {
@@ -35,6 +51,17 @@ const Header = () => {
     }
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    const urlParams = new URLSearchParams(location.search)
+    urlParams.set("searchTerm", searchTerm)
+
+    const searchQuery = urlParams.toString()
+
+    navigate(`/search?${searchQuery}`)
+  }
+
   return (
     <header className="shadow-lg sticky ">
       <div className="flex justify-between items-center max-w-6xl lg:max-w-7xl mx-auto p-4">
@@ -45,25 +72,41 @@ const Header = () => {
           </h1>
         </Link>
 
-        <form className="p-3 bg-slate-100 rounded-lg flex items-center">
-          <input type="text" placeholder="Search..." className="focus:outline-none bg-transparent w-24 sm:w-64" />
+        <form 
+          className="p-3 bg-slate-100 rounded-lg flex items-center"
+          onSubmit={handleSubmit}
+        >
+          <input 
+            type="text" 
+            placeholder="Search..." 
+            className="focus:outline-none bg-transparent w-24 sm:w-64"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+            
 
           <button>
-            <GoSearch className="cursor-pointer" />
+            <GoSearch className="text-slate-600 cursor-pointer" />
           </button>
         </form>
 
         <ul className="flex gap-4">
           <Link to={"/"}>
-            <li className="hidden lg:inline hover:underline">Home</li>
+            <li className="hidden lg:inline hover:underline">
+              Home
+            </li>
           </Link>
 
           <Link to={"/about"}>
-            <li className="hidden lg:inline hover:underline">About</li>
+            <li className="hidden lg:inline hover:underline">
+              About
+            </li>
           </Link>
 
           <Link to={"/news"}>
-            <li className="hidden lg:inline hover:underline">News Articles</li>
+            <li className="hidden lg:inline hover:underline">
+              News Articles
+            </li>
           </Link>
         </ul>
 
@@ -71,7 +114,10 @@ const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div>
-                <img src={currentUser.profilePicture} alt="user photo" className="w-10 h-10 rounded-full" />
+                <img 
+                  src={currentUser.profilePicture} 
+                  alt="user photo" 
+                  className="w-10 h-10 rounded-full" />
               </div>
             </DropdownMenuTrigger>
 
@@ -91,8 +137,10 @@ const Header = () => {
                 <Link to="/dashboard?tab=profile">Profile</Link>
               </DropdownMenuItem>
 
-              <DropdownMenuItem className="font-semibold mt-2" onClick={handleSignout}>
-                Sign Out
+              <DropdownMenuItem 
+                className="font-semibold mt-2" 
+                onClick={handleSignout}>
+                  Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
